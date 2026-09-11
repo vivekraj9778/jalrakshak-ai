@@ -1,0 +1,235 @@
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const Emergency = require("./models/Emergency");
+
+dotenv.config();
+
+const emergencies = [
+  {
+    id: "JR-1024",
+    name: "Ramesh Kumar & Family",
+    phone: "+91 98351 22340",
+    district: "Supaul",
+    location: "Ward 4, Near Birpur Embankment, Supaul",
+    coords: [26.13, 86.62],
+    peopleCount: 6,
+    emergencyType: "Rescue (Trapped)",
+    vulnerableGroups: ["Elderly (2)", "Children (1)"],
+    details:
+      "Water level rose 3 feet in 1 hour. Trapped on single-story roof. 2.4 km from nearest boat.",
+    priority: "Critical",
+    status: "Pending",
+    assignedTeam: "Unassigned",
+    photoUrl:
+      "https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=400&q=80",
+    distanceFromBoat: "2.4 km",
+  },
+  {
+    id: "JR-1023",
+    name: "Sunita Devi",
+    phone: "+91 97412 88910",
+    district: "Katihar",
+    location: "Manihari Ghat Road, Katihar",
+    coords: [25.52, 87.59],
+    peopleCount: 12,
+    emergencyType: "Rescue (Trapped)",
+    vulnerableGroups: ["Elderly (4)", "Children (3)"],
+    details:
+      "Submerged village hut cluster. Needs immediate motorboat rescue before dusk.",
+    priority: "Critical",
+    status: "Assigned",
+    assignedTeam: "SDRF Team Bravo-02",
+    photoUrl:
+      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=400&q=80",
+    distanceFromBoat: "1.1 km",
+  },
+  {
+    id: "JR-1022",
+    name: "Dr. Ananya Jha",
+    phone: "+91 91223 44556",
+    district: "Madhubani",
+    location: "Jhanjharpur East, Madhubani",
+    coords: [26.36, 86.09],
+    peopleCount: 4,
+    emergencyType: "Medical Emergency",
+    vulnerableGroups: ["Pregnant Woman"],
+    details:
+      "Patient in 8th month pregnancy with acute pain. Road cut off by 4 feet swift water.",
+    priority: "Critical",
+    status: "Rescue In Progress",
+    assignedTeam: "NDRF Medical Unit 07",
+    photoUrl: "",
+    distanceFromBoat: "3.2 km",
+  },
+  {
+    id: "JR-1021",
+    name: "Mohan Lal Sahni",
+    phone: "+91 88771 99220",
+    district: "Araria",
+    location: "Forbesganj Rural Sector 3, Araria",
+    coords: [26.16, 87.54],
+    peopleCount: 8,
+    emergencyType: "Food & Water",
+    vulnerableGroups: ["Children (3)"],
+    details:
+      "Drinking water completely contaminated. Food supplies exhausted since yesterday.",
+    priority: "High",
+    status: "Assigned",
+    assignedTeam: "Bihar Seva Relief Boat 04",
+    photoUrl: "",
+    distanceFromBoat: "4.5 km",
+  },
+  {
+    id: "JR-1020",
+    name: "Gopal Yadav",
+    phone: "+91 94312 00192",
+    district: "Saharsa",
+    location: "Simri Bakhtiarpur, Saharsa",
+    coords: [25.86, 86.58],
+    peopleCount: 5,
+    emergencyType: "Evacuation",
+    vulnerableGroups: ["Disabled (1)"],
+    details:
+      "Wheelchair-bound elder needs evacuation to dry relief camp.",
+    priority: "Moderate",
+    status: "Resolved",
+    assignedTeam: "Volunteer Squad 09",
+    photoUrl: "",
+    distanceFromBoat: "0.5 km",
+  },
+  {
+    id: "JR-1019",
+    name: "Parvati Devi",
+    phone: "+91 76541 33211",
+    district: "Purnia",
+    location: "Dagarua Block, Purnia",
+    coords: [25.8, 87.49],
+    peopleCount: 3,
+    emergencyType: "Medical Emergency",
+    vulnerableGroups: ["Elderly (2)"],
+    details:
+      "Diabetic patient running out of insulin, trapped in isolated hamlet.",
+    priority: "High",
+    status: "Assigned",
+    assignedTeam: "Red Cross Mobile Unit",
+    photoUrl: "",
+    distanceFromBoat: "2.8 km",
+  },
+  {
+    id: "JR-1018",
+    name: "Mukesh Mandal",
+    phone: "+91 99052 11488",
+    district: "Khagaria",
+    location: "Alauli river bend, Khagaria",
+    coords: [25.53, 86.49],
+    peopleCount: 9,
+    emergencyType: "Boat Required",
+    vulnerableGroups: ["Children (4)"],
+    details:
+      "Cattle and families stranded on raised railway embankment with water on both sides.",
+    priority: "Critical",
+    status: "Rescue In Progress",
+    assignedTeam: "NDRF Boat Alpha-01",
+    photoUrl: "",
+    distanceFromBoat: "1.8 km",
+  },
+  {
+    id: "JR-1025",
+    name: "Ravi Shankar Yadav & Family",
+    phone: "+91 94312 55780",
+    district: "Vaishali",
+    location: "Hajipur Ward 7, Near Gandak Embankment",
+    coords: [25.678, 85.215],
+    peopleCount: 11,
+    emergencyType: "Rescue (Trapped)",
+    vulnerableGroups: ["Elderly (3)", "Children (2)"],
+    details:
+      "Gandak river breached embankment. Ground floor fully submerged. Family on rooftop since 6 hrs.",
+    priority: "Critical",
+    status: "Pending",
+    assignedTeam: "Unassigned",
+    photoUrl: "",
+    distanceFromBoat: "1.8 km",
+  },
+  {
+    id: "JR-1026",
+    name: "Seema Devi",
+    phone: "+91 91120 66341",
+    district: "Vaishali",
+    location: "Lalganj Block, Vaishali",
+    coords: [25.663, 85.238],
+    peopleCount: 5,
+    emergencyType: "Medical Emergency",
+    vulnerableGroups: ["Infant (1)", "Elderly (1)"],
+    details:
+      "Infant with high fever, no road access. Requesting medical boat immediately.",
+    priority: "Critical",
+    status: "Assigned",
+    assignedTeam: "SDRF Vaishali Squad",
+    photoUrl: "",
+    distanceFromBoat: "0.9 km",
+  },
+  {
+    id: "JR-1027",
+    name: "Anil Kumar Gupta",
+    phone: "+91 97630 11902",
+    district: "Muzaffarpur",
+    location: "Minapur Chowk, Muzaffarpur",
+    coords: [26.118, 85.395],
+    peopleCount: 7,
+    emergencyType: "Food & Water",
+    vulnerableGroups: ["Children (4)"],
+    details:
+      "Village cut off by Burhi Gandak overflow. No food for 2 days. Water contaminated.",
+    priority: "High",
+    status: "Pending",
+    assignedTeam: "Unassigned",
+    photoUrl: "",
+    distanceFromBoat: "2.1 km",
+  },
+  {
+    id: "JR-1028",
+    name: "Vijay Kumar Paswan",
+    phone: "+91 88621 44190",
+    district: "Sitamarhi",
+    location: "Dumra Block, Sitamarhi",
+    coords: [26.603, 85.495],
+    peopleCount: 14,
+    emergencyType: "Evacuation",
+    vulnerableGroups: ["Elderly (5)", "Children (3)"],
+    details:
+      "Bagmati breach overnight. Entire hamlet of 14 needs evacuation to relief camp.",
+    priority: "High",
+    status: "Assigned",
+    assignedTeam: "NDRF Bagmati River Unit",
+    photoUrl: "",
+    distanceFromBoat: "1.3 km",
+  },
+];
+
+const seedEmergencies = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+
+    console.log("MongoDB connected");
+
+    await Emergency.deleteMany({});
+
+    await Emergency.insertMany(emergencies);
+
+    console.log(`${emergencies.length} emergencies inserted successfully`);
+
+    await mongoose.connection.close();
+
+    console.log("Database connection closed");
+    process.exit(0);
+  } catch (error) {
+    console.error("Seed Error:", error.message);
+
+    await mongoose.connection.close();
+
+    process.exit(1);
+  }
+};
+
+seedEmergencies();

@@ -1,0 +1,9 @@
+05aeaa8 | Sat Sep 12 04:57:13 2026 | Fix SOS actions and notification navigation
+6ca070f | Fri Sep 11 18:54:11 2026 | Delete CNAME
+1bb825d | Fri Sep 11 16:21:53 2026 | Add authentication and user emergency portal
+dea0e6b | Fri Sep 11 00:06:11 2026 | Update gitignore
+40525f2 | Thu Sep 10 23:51:42 2026 | Update frontend and backend
+00c9c9c | Wed Sep 9 20:44:01 2026 | Improve home page background
+99f8249 | Wed Sep 9 20:27:47 2026 | Fix Vercel SPA routing
+64be0d7 | Wed Sep 9 20:01:06 2026 | Create CNAME
+2f13f8e | Wed Sep 9 19:28:58 2026 | Complete JalRakshak AI website
